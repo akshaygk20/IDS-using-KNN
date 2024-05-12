@@ -9,10 +9,10 @@ Anomaly detection is a critical aspect of network security, aiming to identify p
 High-dimensional data: Network traffic data often contain numerous features, making it challenging to identify anomalies.
 Imbalanced class distribution: The majority of network traffic is normal, while anomalies (attacks) are relatively rare.
 Evolving attack techniques: Attackers constantly adapt, necessitating robust detection methods.
+
 #Dataset Description
 We utilize the popular KDD Cup dataset for intrusion detection systems, containing network traffic data collected from a simulated military network environment. The dataset includes two files: KDDTrain+.txt (training data) and KDDTest+.txt (testing data). We split the training data into 80% for training and 20% for testing.
-
-#The dataset comprises 41 network connection records, with each row representing a connection and features such as protocol type, source/destination bytes, flags, error rates, etc., indicating whether the connection is an attack or normal.
+The dataset comprises 41 network connection records, with each row representing a connection and features such as protocol type, source/destination bytes, flags, error rates, etc., indicating whether the connection is an attack or normal.
 
 #Relevant Features
 protocol_type
