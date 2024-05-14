@@ -27,26 +27,20 @@ def preprocess_data(data):
 
     return X, y
 
-def apply_pca(X):
-    pca = PCA(n_components=2)
-    X_reduce = pca.fit_transform(X)
-    return X_reduce
-
-def train_model(X_train, y_train, param_grid):
+def train_evaluate_model(X_train, X_test, y_train, y_test, param_grid):
     knn = KNeighborsClassifier()
     grid_search = GridSearchCV(knn, param_grid, cv=3, n_jobs=-1)
     grid_search.fit(X_train, y_train)
     best_params = grid_search.best_params_
     best_knn = KNeighborsClassifier(n_neighbors=best_params['n_neighbors'])
     best_knn.fit(X_train, y_train)
-    return best_knn
 
-def evaluate_model(model, X_test, y_test):
-    y_pred = model.predict(X_test)
+    y_pred = best_knn.predict(X_test)
     conf_matrix = confusion_matrix(y_test, y_pred)
     accuracy = accuracy_score(y_test, y_pred)
     report = classification_report(y_test, y_pred)
-    return y_pred, conf_matrix, accuracy, report
+
+    return best_knn, y_pred, conf_matrix, accuracy, report
 
 def calculate_complexity(train_data, X_train, X_test, y_train, y_test, grid_search, best_knn, y_pred):
     space_complexity = {
@@ -62,7 +56,7 @@ def calculate_complexity(train_data, X_train, X_test, y_train, y_test, grid_sear
     total_space_complexity = sum(space_complexity.values())
     return space_complexity, total_space_complexity
 
-def train_with_pca(file_path):
+def train_and_evaluate(file_path, use_pca=False):
     start_time = time.time()
 
     # Loading data
@@ -71,57 +65,10 @@ def train_with_pca(file_path):
     # Preprocessing data
     X, y = preprocess_data(train_data)
 
-    # Applying PCA
-    X_reduce = apply_pca(X)
-
-    # Spliting data into train and test sets
-    X_train, X_test, y_train, y_test = train_test_split(X_reduce, y, test_size=0.2, random_state=42)
-
-    # Defining parameter grid for hyperparameter tuning
-    param_grid = {'n_neighbors': [3, 5, 7, 9]}
-
-    # Training model
-    best_knn = train_model(X_train, y_train, param_grid)
-
-    # Evaluating model
-    y_pred, conf_matrix, accuracy, report = evaluate_model(best_knn, X_test, y_test)
-
-    # Calculating complexity
-    space_complexity, total_space_complexity = calculate_complexity(train_data, X_train, X_test, y_train, y_test, None, best_knn, y_pred)
-
-    # Printing results
-    print("Best Hyperparameters:", best_knn.get_params())
-    print("Confusion Matrix:")
-    print(conf_matrix)
-    plt.figure(figsize=(8, 6))
-    plt.imshow(conf_matrix, cmap='Blues', interpolation='nearest')
-    plt.title('Confusion Matrix')
-    plt.colorbar()
-    plt.xlabel('Predicted Labels')
-    plt.ylabel('True Labels')
-    plt.show()
-    print(f"Accuracy: {accuracy:.2f}")
-    print("Classification Report:")
-    print(report)
-    for obj, size in space_complexity.items():
-        print(f"Space Complexity of {obj}: {size} bytes")
-    print(f"Total Space Complexity: {total_space_complexity} bytes")
-
-    # Recording end time
-    end_time = time.time()
-
-    # Calculating execution time
-    execution_time = end_time - start_time
-    print("Execution Time:", execution_time, "seconds")
-
-def train_without_pca(file_path):
-    start_time = time.time()
-
-    # Loading data
-    train_data = load_data(file_path)
-
-    # Preprocessing data
-    X, y = preprocess_data(train_data)
+    # Applying PCA if required
+    if use_pca:
+        pca = PCA(n_components=2)
+        X = pca.fit_transform(X)
 
     # Splitting data into train and test sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -129,11 +76,8 @@ def train_without_pca(file_path):
     # Defining parameter grid for hyperparameter tuning
     param_grid = {'n_neighbors': [3, 5, 7, 9]}
 
-    # Training model
-    best_knn = train_model(X_train, y_train, param_grid)
-
-    # Evaluating model
-    y_pred, conf_matrix, accuracy, report = evaluate_model(best_knn, X_test, y_test)
+    # Training and evaluating model
+    best_knn, y_pred, conf_matrix, accuracy, report = train_evaluate_model(X_train, X_test, y_train, y_test, param_grid)
 
     # Calculating complexity
     space_complexity, total_space_complexity = calculate_complexity(train_data, X_train, X_test, y_train, y_test, None, best_knn, y_pred)
@@ -164,5 +108,5 @@ def train_without_pca(file_path):
     print("Execution Time:", execution_time, "seconds")
 
 if __name__ == "__main__":
-    train_with_pca("/content/KDDTrain+.txt")
-    train_without_pca("/content/KDDTrain+.txt")
+    train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTest+.txt", use_pca=True)
+    train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTest+.txt", use_pca=False)  
