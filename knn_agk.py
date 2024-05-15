@@ -121,16 +121,16 @@ if __name__ == "__main__":
     
     if option_split == "yes":
         if option_pca == "yes":
-            train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTrain+.txt", split_data=True, use_pca=True)
+            train_and_evaluate("/content/KDDTrain+.txt", split_data=True, use_pca=True)
         elif option_pca == "no":
-            train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTrain+.txt", split_data=True, use_pca=False)
+            train_and_evaluate("/content/KDDTrain+.txt", split_data=True, use_pca=False)
         else:
             print("Invalid option for PCA! Please enter 'yes' or 'no'.")
     elif option_split == "no":
         if option_pca == "yes":
-            train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTrain+.txt", file_path_test="C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTest+.txt", split_data=False, use_pca=True)
+            train_and_evaluate("/content/KDDTrain+.txt", file_path_test="/content/KDDTest+.txt", split_data=False, use_pca=True)
         elif option_pca == "no":
-            train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTrain+.txt", file_path_test="C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTest+.txt", split_data=False, use_pca=False)
+            train_and_evaluate("/content/KDDTrain+.txt", file_path_test="/content/KDDTest+.txt", split_data=False, use_pca=False)
         else:
             print("Invalid option for PCA! Please enter 'yes' or 'no'.")
     else:
