@@ -5,7 +5,6 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from sklearn.decomposition import PCA
 import time
 import sys
@@ -56,22 +55,31 @@ def calculate_complexity(train_data, X_train, X_test, y_train, y_test, grid_sear
     total_space_complexity = sum(space_complexity.values())
     return space_complexity, total_space_complexity
 
-def train_and_evaluate(file_path, use_pca=False):
+def train_and_evaluate(file_path_train, file_path_test=None, split_data=True, use_pca=False):
     start_time = time.time()
 
-    # Loading data
-    train_data = load_data(file_path)
+    # Loading training data
+    train_data = load_data(file_path_train)
 
-    # Preprocessing data
-    X, y = preprocess_data(train_data)
+    # Preprocessing training data
+    X_train, y_train = preprocess_data(train_data)
 
-    # Applying PCA if required
+    # Applying PCA if specified
     if use_pca:
         pca = PCA(n_components=2)
-        X = pca.fit_transform(X)
+        X_train = pca.fit_transform(X_train)
 
-    # Splitting data into train and test sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    if not split_data:
+        # Loading testing data
+        test_data = load_data(file_path_test)
+        X_test, y_test = preprocess_data(test_data)
+
+        # Applying PCA if specified
+        if use_pca:
+            X_test = pca.transform(X_test)
+    else:
+        # Splitting data into train and test sets
+        X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
 
     # Defining parameter grid for hyperparameter tuning
     param_grid = {'n_neighbors': [3, 5, 7, 9]}
@@ -80,7 +88,7 @@ def train_and_evaluate(file_path, use_pca=False):
     best_knn, y_pred, conf_matrix, accuracy, report = train_evaluate_model(X_train, X_test, y_train, y_test, param_grid)
 
     # Calculating complexity
-    space_complexity, total_space_complexity = calculate_complexity(train_data, X_train, X_test, y_train, y_test, None, best_knn, y_pred)
+    space_complexity, total_space_complexity = calculate_complexity(train_data, X_train if split_data else X_train, X_test, y_train if split_data else y_train, y_test, None, best_knn, y_pred)
 
     # Printing results
     print("Best Hyperparameters:", best_knn.get_params())
@@ -108,5 +116,22 @@ def train_and_evaluate(file_path, use_pca=False):
     print("Execution Time:", execution_time, "seconds")
 
 if __name__ == "__main__":
-    train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTest+.txt", use_pca=True)
-    train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTest+.txt", use_pca=False)  
+    option_split = input("Do you want to split the data into train and test sets? (yes/no): ").lower()
+    option_pca = input("Do you want to use PCA? (yes/no): ").lower()
+    
+    if option_split == "yes":
+        if option_pca == "yes":
+            train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTrain+.txt", split_data=True, use_pca=True)
+        elif option_pca == "no":
+            train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTrain+.txt", split_data=True, use_pca=False)
+        else:
+            print("Invalid option for PCA! Please enter 'yes' or 'no'.")
+    elif option_split == "no":
+        if option_pca == "yes":
+            train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTrain+.txt", file_path_test="C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTest+.txt", split_data=False, use_pca=True)
+        elif option_pca == "no":
+            train_and_evaluate("C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTrain+.txt", file_path_test="C:\\Users\\kaksh\\Desktop\\knn\\data\\KDDTest+.txt", split_data=False, use_pca=False)
+        else:
+            print("Invalid option for PCA! Please enter 'yes' or 'no'.")
+    else:
+        print("Invalid option for splitting! Please enter 'yes' or 'no'.")
