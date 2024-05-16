@@ -76,4 +76,53 @@ Ensemble or hybrid approaches: Explore combining multiple methods (e.g., KNN and
 
 #Conclusion
 
+# KNN Classifier for Network Intrusion Detection
+
+This project implements a K-Nearest Neighbors (KNN) classifier for network intrusion detection using the KDD Cup 1999 dataset. The code is written in Python and uses the scikit-learn library.
+
+
+## How to run the code
+
+## Prerequisites
+
+- Python 3.x
+- Pandas
+- NumPy
+- Scikit-learn
+- Matplotlib
+
+## Dataset
+
+The KDD Cup 1999 dataset is used for training and testing the KNN classifier. The dataset files (`KDDTrain+.txt` and `KDDTest+.txt`) should be placed in the `data` directory.
+
+## Usage
+
+1. Clone the repository or download the source code.
+2. Navigate to the project directory.
+3. Open a terminal or command prompt.
+4. Run the Python script `knn_agk.py` with the following command:
+
+#python knn_agk.py
+
+5. The script will prompt you with two questions:
+   - "Do you want to split the data into train and test sets? (yes/no):"
+     - Enter "yes" to split the `KDDTrain+.txt` file into train and test sets (80% train, 20% test).
+     - Enter "no" to use `KDDTrain+.txt` for training and `KDDTest+.txt` for testing.
+   - "Do you want to use PCA? (yes/no):"
+     - Enter "yes" to apply Principal Component Analysis (PCA) for dimensionality reduction.
+     - Enter "no" to use the original feature set.
+
+6. The script will train the KNN classifier, evaluate its performance, and display the results, including:
+   - Best hyperparameters
+   - Confusion matrix
+   - Accuracy
+   - Classification report
+   - Space complexity of various objects
+   - Total space complexity
+   - Execution time
+
+## Note
+
+Make sure to update the file paths in the `load_data` function (`knn_agk.py`) if the dataset files are located in a different directory.
+
 Anomaly detection involves identifying patterns or instances in a dataset that significantly deviate from expected behavior. Among various techniques, K-Nearest Neighbors (KNN) stands out as effective for local patterns but sensitive to outliers. Researchers recommend hybrid approaches, feature engineering, and advanced hyperparameter tuning to enhance anomaly detection performance. Additionally, exploring deep learning models and collaborating with domain experts can lead to further improvements.
